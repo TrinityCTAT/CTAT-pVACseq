@@ -16,8 +16,11 @@ version 1.0
 
 
 
-import "Tasks_wdl/annotateVCF.wdl" as annotateVCF
-import "Tasks_wdl/phasing.wdl" as phasing
+#import "Tasks_wdl/annotateVCF.wdl" as annotateVCF
+#import "Tasks_wdl/phasing.wdl" as phasing
+
+import "https://raw.githubusercontent.com/brownmp/CTAT-pVACseq/main/WDL/Tasks_wdl/annotateVCF.wdl"
+import "https://raw.githubusercontent.com/brownmp/CTAT-pVACseq/main/WDL/Tasks_wdl/phasing.wdl"
 
 
 
