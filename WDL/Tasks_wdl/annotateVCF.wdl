@@ -180,7 +180,7 @@ task RunAnnotateGnomad {
             --output-type z \
             --annotations ~{gnomad_vcf} \
             --columns "INFO/gnomad_RS,INFO/gnomad_AF" \
-            --output VCF.gnomad.vcf.gz \
+            --output gnomAD_annotated.vcf.gz \
             ~{VCF}
 
 
@@ -191,8 +191,8 @@ task RunAnnotateGnomad {
         from pysam import VariantFile
         import os, sys 
 
-        vcf_in = VariantFile("VCF.gnomad.vcf.gz", "rb")
-        vcf_out = VariantFile('output.vcf', 'w', header=vcf_in.header)
+        vcf_in = VariantFile("gnomAD_annotated.vcf.gz", "rb")
+        vcf_out = VariantFile('gnomAD_filtered.vcf', 'w', header=vcf_in.header)
 
         counter, total = 0, 0
         for rec in vcf_in.fetch():
@@ -201,21 +201,22 @@ task RunAnnotateGnomad {
             vcf_out.write(rec)
             counter+=1
 
-            #try:
-            #    if rec.info["gnomad_AF"][0] <= .009:
-            #        vcf_out.write(rec)
-            #        counter+=1
-            #except:
-            #    vcf_out.write(rec)
-            #    counter+=1
+            try:
+                if rec.info["gnomad_AF"][0] <= .009:
+                    vcf_out.write(rec)
+                    counter+=1
+            except:
+                vcf_out.write(rec)
+                counter+=1
         CODE
 
-        bgzip -c output.vcf > output.vcf.gz
-        tabix -p vcf output.vcf.gz
+        bgzip -c gnomAD_filtered.vcf > gnomAD_filtered.vcf.gz
+        tabix -p vcf gnomAD_filtered.vcf.gz
     >>>
     output {
-        File gnomad_annotated_VCF       = "output.vcf.gz"
-        File gnomad_annotated_VCF_index = "output.vcf.gz.tbi"
+        File unfiltered_gnomad_annotated_VCF    = "gnomAD_annotated.vcf.gz"
+        File gnomad_annotated_VCF               = "gnomAD_filtered.vcf.gz"
+        File gnomad_annotated_VCF_index         = "gnomAD_filtered.vcf.gz.tbi"
     }
 
     runtime {

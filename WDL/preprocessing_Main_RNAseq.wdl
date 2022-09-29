@@ -168,8 +168,8 @@ workflow pVACseqPreprocess {
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunAnnotateGnomad as RunAnnotateGnomad{
         input:
-            VCF                 = RunDecompose.decomposed_VCF,
-            VCF_index           = RunDecompose.decomposed_VCF_index,
+            VCF                 = RunAnnotateRNAediting.annotated_VCF,
+            VCF_index           = RunAnnotateRNAediting.annotated_VCF_index,
             gnomad_vcf          = gnomadVCF,
             gnomad_vcf_index    = gnomadVCFindex,
             
