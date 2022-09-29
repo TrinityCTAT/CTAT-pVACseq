@@ -35,11 +35,6 @@ workflow pVACseqPreprocess {
         #~~~~~~~~~~~~
         String sample_id
       
-        #~~~~~~~~~~~~
-        # FASTQ Files
-        #~~~~~~~~~~~~
-        File left
-        File right
         
         #~~~~~~~~~~~~
         # VCF Files
@@ -213,8 +208,6 @@ workflow pVACseqPreprocess {
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunExpressionData as RunExpressionData{
         input:
-            left                = left,
-            right               = right,
             VCF                 = RunAddReadcount.annotated_vcf,
             BAM                 = BAM,
             BAM_index           = BAM_index,

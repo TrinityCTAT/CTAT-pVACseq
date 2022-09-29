@@ -492,8 +492,6 @@ task RunAddReadcount{
 ###########################################################
 task RunExpressionData{
     input {
-        File left 
-        File right
         File VCF
         
         #~~~~~~~~~~~~
