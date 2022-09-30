@@ -32,6 +32,7 @@ task RunAnnotateRNAediting {
             --output-type z \
             --annotations ~{RNA_editing_VCF} \
             --columns "INFO/RNAEDIT" \
+            --header-line '##INFO=<ID=RNAEDIT,Number=1,Type=String,Description="A known or predicted RNA-editing site">' \
             --output ~{sample_id}_annotated_RNAediting.vcf.gz \
             ~{VCF}
 
@@ -41,6 +42,49 @@ task RunAnnotateRNAediting {
     output {
         File annotated_VCF       = "~{sample_id}_annotated_RNAediting.vcf.gz"
         File annotated_VCF_index = "~{sample_id}_annotated_RNAediting.vcf.gz.tbi"
+    }
+
+    runtime {
+        disks: "local-disk " + disk + " HDD"
+        docker: "mbrown/pvactools:devel"
+        memory: "4G"
+        preemptible: preemptible
+        cpus : cpus
+    }
+}
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run Annotations: Filter RNA-Editing
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add the RNA-Editing Annotations to the VCF file 
+task RunFilterRNAediting {
+    input {
+        File VCF
+        File VCF_index
+        String sample_id
+
+        Int preemptible
+        Int cpus
+        Int disk = ceil((size(VCF, "GB") * 2) + 50)
+    }
+
+    command <<<
+        set -ex
+
+        echo "####### Filter the RNA-editing variants ########"
+
+        bcftools filter \
+            --include 'RNAEDIT="."' \
+            --output ~{sample_id}_Filtered_RNAediting.vcf.gz \
+            --threads ~{cpus} \
+            ~{VCF}
+
+        tabix -p vcf ~{sample_id}_Filtered_RNAediting.vcf.gz
+
+    >>>
+    output {
+        File filtered_VCF       = "~{sample_id}_Filtered_RNAediting.vcf.gz"
+        File filtered_VCF_index = "~{sample_id}_Filtered_RNAediting.vcf.gz.tbi"
     }
 
     runtime {
