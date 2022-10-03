@@ -46,7 +46,7 @@ task RunAnnotateRNAediting {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -89,7 +89,7 @@ task RunFilterRNAediting {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -147,7 +147,7 @@ task RunCreateExonBED {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -188,7 +188,7 @@ task RunFilterNonExons {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -265,7 +265,7 @@ task RunAnnotateGnomad {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -310,7 +310,7 @@ task RunAnnotateGenotypeSample{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + 100) + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "20GB"
     }
@@ -365,7 +365,7 @@ task RunAnnotateVEP{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(ref_fasta, "GB") + size(VEP_Reference, "GB") + size(VCF, "GB")*2 + 100) + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "50GB"
     }
@@ -405,7 +405,7 @@ task RunDecompose{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + 100) + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         memory: "50GB"
     }
 }
@@ -523,7 +523,7 @@ task RunAddReadcount{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + size(readcount_indel,"GB") + size(readcount_snv,"GB") + 100) + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "10GB"
     }
@@ -608,7 +608,7 @@ task RunExpressionData{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + size(BAM, "GB")*2 + size(ref_fasta,"GB") + 100) + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "50GB"
     }
@@ -676,7 +676,7 @@ task RunAddExpressionData{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + disk + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "50GB"
     }
