@@ -203,7 +203,7 @@ workflow pVACseqPreprocess {
     }
     call annotateVCF.RunAddReadcount as RunAddReadcount{
         input:
-            VCF                 = RunAnnotateGnomad.gnomad_annotated_VCF,
+            VCF                 = RunAnnotateGnomad.gnomad_filtered_VCF,
             readcount_indel     = RunBamReadcount.sample_bam_readcount_indel,
             readcount_snv       = RunBamReadcount.sample_bam_readcount_snv,
             RNAorDNA            = "RNA",

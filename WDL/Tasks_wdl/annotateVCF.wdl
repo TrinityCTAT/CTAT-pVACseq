@@ -242,8 +242,8 @@ task RunAnnotateGnomad {
         for rec in vcf_in.fetch():
             total += 1
 
-            vcf_out.write(rec)
-            counter+=1
+            #vcf_out.write(rec)
+            #counter+=1
 
             try:
                 if rec.info["gnomad_AF"][0] <= .009:
@@ -259,8 +259,8 @@ task RunAnnotateGnomad {
     >>>
     output {
         File unfiltered_gnomad_annotated_VCF    = "gnomAD_annotated.vcf.gz"
-        File gnomad_annotated_VCF               = "gnomAD_filtered.vcf.gz"
-        File gnomad_annotated_VCF_index         = "gnomAD_filtered.vcf.gz.tbi"
+        File gnomad_filtered_VCF                = "gnomAD_filtered.vcf.gz"
+        File gnomad_filtered_VCF_index          = "gnomAD_filtered.vcf.gz.tbi"
     }
 
     runtime {
