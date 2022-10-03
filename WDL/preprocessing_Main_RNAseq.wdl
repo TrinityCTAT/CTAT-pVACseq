@@ -189,8 +189,8 @@ workflow pVACseqPreprocess {
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunBamReadcount as RunBamReadcount{
         input:
-            VCF                 = RunAnnotateGnomad.gnomad_annotated_VCF,
-            VCF_index           = RunAnnotateGnomad.gnomad_annotated_VCF_index,
+            VCF                 = RunAnnotateGnomad.gnomad_filtered_VCF,
+            VCF_index           = RunAnnotateGnomad.gnomad_filtered_VCF_index,
             BAM                 = BAM,
             BAM_index           = BAM_index,
             ref_fasta           = ref_fasta,
