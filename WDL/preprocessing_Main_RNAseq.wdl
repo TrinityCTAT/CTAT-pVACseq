@@ -101,7 +101,7 @@ workflow pVACseqPreprocess {
             ref_fasta_index     = ref_fasta_index,
             ref_dict            = ref_dict,
             
-            cpus                 = cpus,
+            cpus                = cpus,
             preemptible         = preemptible,
             sample_id           = sample_id
     }
@@ -125,7 +125,7 @@ workflow pVACseqPreprocess {
         input:
             GTF                 = GTF,
             
-            cpus                 = cpus,
+            cpus                = 1,
             preemptible         = preemptible
     }
 
@@ -138,7 +138,7 @@ workflow pVACseqPreprocess {
             VCF                 = RunDecompose.decomposed_VCF,
             VCF_index           = RunDecompose.decomposed_VCF_index,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = sample_id
     }
@@ -153,7 +153,7 @@ workflow pVACseqPreprocess {
             VCF_index           = RunFilterNonExons.exon_filtered_VCF_index,
             RNA_editing_VCF     = RNA_editing_VCF,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = sample_id
     }
@@ -163,13 +163,13 @@ workflow pVACseqPreprocess {
             VCF                 = RunAnnotateRNAediting.annotated_VCF,
             VCF_index           = RunAnnotateRNAediting.annotated_VCF_index,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = sample_id
     }
 
     #~~~~~~~~~~~~~~~~~~~~
-    # gnomAD Annotations
+    # gnomAD Annotations and filtering 
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunAnnotateGnomad as RunAnnotateGnomad{
         input:

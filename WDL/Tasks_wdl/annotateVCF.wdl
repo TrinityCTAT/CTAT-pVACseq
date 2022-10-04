@@ -549,11 +549,12 @@ task RunExpressionData{
         File BAM_index
         File GTF
 
+        String sample_id
         String Tumor_ID
 
         Int cpus
         Int preemptible
-        String sample_id
+        Int disk = ceil( (size(ref_fasta, "GB") * 2) + size(ref_fasta_index, "GB") + size(BAM, "GB") + size(BAM_index, "GB") + size(GTF, "GB") + 50)
     }
 
     command <<<
@@ -607,7 +608,7 @@ task RunExpressionData{
 
     runtime {
         preemptible: preemptible
-        disks: "local-disk " + ceil( size(VCF, "GB")*2 + size(BAM, "GB")*2 + size(ref_fasta,"GB") + 100) + " HDD"
+        disks: "local-disk " + disk + " HDD"
         docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "50GB"
