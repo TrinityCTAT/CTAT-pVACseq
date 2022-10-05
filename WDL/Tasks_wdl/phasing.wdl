@@ -83,7 +83,7 @@ task RunCombineSomaticGermline{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(HaplotypeCaller_VCF, "GB")*2 + size(Somatic_VCF, "GB")*2 + size(ref_fasta,"GB") + 100) + " HDD"
-        docker: "mbrown/gatk3:devel"
+        docker: "brownmp/gatk3:devel"
         cpu: cpus
         memory: "50GB"
     }
@@ -142,7 +142,7 @@ task RunAnnotateCombinedVCF{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + size(ref_fasta,"GB") + 100) + " HDD"
-        docker: "mbrown/pvactools:devel"
+        docker: "brownmp/pvactools:devel"
         cpu: cpus
         memory: "50GB"
     }
