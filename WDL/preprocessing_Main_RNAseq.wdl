@@ -197,7 +197,7 @@ workflow pVACseqPreprocess {
             ref_fasta_index     = ref_fasta_index,
             ref_dict            = ref_dict,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = sample_id
     }
@@ -208,7 +208,7 @@ workflow pVACseqPreprocess {
             readcount_snv       = RunBamReadcount.sample_bam_readcount_snv,
             RNAorDNA            = "RNA",
 
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = sample_id
     }
@@ -229,7 +229,6 @@ workflow pVACseqPreprocess {
 
             GTF                 = GTF,
 
-            cpus                = cpus,
             preemptible         = preemptible,
             sample_id           = sample_id
     }

@@ -552,7 +552,7 @@ task RunExpressionData{
         String sample_id
         String Tumor_ID
 
-        Int cpus
+        Int cpus = 2
         Int preemptible
         Int disk = ceil( (size(ref_fasta, "GB") * 4) + size(ref_fasta_index, "GB") + size(ref_dict, "GB") + size(BAM, "GB") + size(BAM_index, "GB") + size(GTF, "GB") + 50)
     }
