@@ -132,7 +132,7 @@ workflow pVACseqPreprocess {
             ref_fasta_index     = ref_fasta_index,
             ref_dict            = ref_dict,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = Tumor_ID
     }
@@ -146,7 +146,7 @@ workflow pVACseqPreprocess {
             ref_fasta_index     = ref_fasta_index,
             ref_dict            = ref_dict,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = Normal_ID
     }
@@ -161,7 +161,7 @@ workflow pVACseqPreprocess {
             ref_fasta_index     = ref_fasta_index,
             ref_dict            = ref_dict,
             
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = Tumor_ID
     }
@@ -174,7 +174,7 @@ workflow pVACseqPreprocess {
             readcount_snv       = TumorRunBamReadcount.sample_bam_readcount_snv,
             RNAorDNA            = "DNA",
 
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = Tumor_ID
     }
@@ -186,7 +186,7 @@ workflow pVACseqPreprocess {
             readcount_snv       = NormalRunBamReadcount.sample_bam_readcount_snv,
             RNAorDNA            = "DNA",
 
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = Normal_ID
     }
@@ -198,7 +198,7 @@ workflow pVACseqPreprocess {
             readcount_snv       = RnaRunBamReadcount.sample_bam_readcount_snv,
             RNAorDNA            = "RNA",
 
-            cpus                = cpus,
+            cpus                = 1,
             preemptible         = preemptible,
             sample_id           = Tumor_ID
     }
