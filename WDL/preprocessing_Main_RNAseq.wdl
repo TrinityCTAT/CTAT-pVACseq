@@ -230,7 +230,8 @@ workflow pVACseqPreprocess {
             GTF                 = GTF,
 
             preemptible         = preemptible,
-            sample_id           = sample_id
+            sample_id           = sample_id,
+            cpus                = cpus
     }
 
 

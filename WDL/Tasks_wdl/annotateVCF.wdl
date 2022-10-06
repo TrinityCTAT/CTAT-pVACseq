@@ -552,7 +552,7 @@ task RunExpressionData{
         String sample_id
         String Tumor_ID
 
-        Int cpus = 2
+        Int cpus
         Int preemptible
         Int disk = ceil( (size(ref_fasta, "GB") * 4) + size(ref_fasta_index, "GB") + size(ref_dict, "GB") + size(BAM, "GB") + size(BAM_index, "GB") + size(GTF, "GB") + 50)
     }
@@ -611,7 +611,7 @@ task RunExpressionData{
         disks: "local-disk " + disk + " HDD"
         docker: "brownmp/pvactools:devel"
         cpu: cpus
-        memory: "50GB"
+        memory: "150GB"
     }
 }
 
