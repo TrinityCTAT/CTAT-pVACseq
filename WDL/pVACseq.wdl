@@ -73,7 +73,8 @@ task RunpVACseq{
     >>>
 
     output {
-        File pvacseq_output = "output.tar"
+        File pvacseq_output   = "output.tar"
+        File pvacseq_epitopes = "output/MHC_Class_I/~{sample_id}.all_epitopes.tsv"
     }
 
     runtime {
@@ -84,6 +85,108 @@ task RunpVACseq{
         memory: "50GB"
     }
 }
+
+
+task RunBindingFilterpVACseq {
+    input {
+        File epitopes_tsv
+        String sample_id
+
+        Int preemptible
+        Int cpus = 1
+        Int disk = ceil((size(epitopes_tsv, "GB") * 2) + 50)
+    }
+
+    command <<<
+        set -ex
+
+        echo "####### Creating Exon Bed File ########"
+
+        pvacseq binding_filter \
+            --exclude-NAs \
+            ~{epitopes_tsv} \
+            ~{sample_id}_binding_filter_noNAs.tsv
+    >>>
+    output {
+        File binding_filter       = "~{sample_id}_binding_filter_noNAs.tsv"
+    }
+
+    runtime {
+        disks: "local-disk " + disk + " HDD"
+        docker: "brownmp/pvactools:devel"
+        memory: "4G"
+        preemptible: preemptible
+        cpus : cpus
+    }
+}
+
+task RunCoverageFilterpVACseq {
+    input {
+        File epitopes_tsv
+        String sample_id
+
+        Int preemptible
+        Int cpus = 1
+        Int disk = ceil((size(epitopes_tsv, "GB") * 2) + 50)
+    }
+
+    command <<<
+        set -ex
+
+        echo "####### Creating Exon Bed File ########"
+
+        pvacseq coverage_filter \
+            --exclude-NAs \
+            ~{epitopes_tsv} \
+            ~{sample_id}_coverage_binding_filter_noNAs.tsv
+    >>>
+    output {
+        File coverage_filter       = "~{sample_id}_coverage_binding_filter_noNAs.tsv"
+    }
+
+    runtime {
+        disks: "local-disk " + disk + " HDD"
+        docker: "brownmp/pvactools:devel"
+        memory: "4G"
+        preemptible: preemptible
+        cpus : cpus
+    }
+}
+
+
+task RunTranscriptSupportFilterpVACseq {
+    input {
+        File epitopes_tsv
+        String sample_id
+
+        Int preemptible
+        Int cpus = 1
+        Int disk = ceil((size(epitopes_tsv, "GB") * 2) + 50)
+    }
+
+    command <<<
+        set -ex
+
+        echo "####### Creating Exon Bed File ########"
+
+        pvacseq transcript_support_level_filter \
+            --exclude-NAs \
+            ~{epitopes_tsv} \
+            ~{sample_id}_transcript_support_coverage_binding_filter_noNAs.tsv
+    >>>
+    output {
+        File TSL_filter       = "~{sample_id}_transcript_support_coverage_binding_filter_noNAs.tsv"
+    }
+
+    runtime {
+        disks: "local-disk " + disk + " HDD"
+        docker: "brownmp/pvactools:devel"
+        memory: "4G"
+        preemptible: preemptible
+        cpus : cpus
+    }
+}
+
 
             ############################################################
         ####################################################################
@@ -128,7 +231,7 @@ workflow pVACseq {
         #~~~~~~~~~~~~
         # general runtime settings
         #~~~~~~~~~~~~
-        Int preemptible = 2
+        Int preemptible = 0
         
     }
 
@@ -156,5 +259,35 @@ workflow pVACseq {
             preemptible                     = preemptible,
             sample_id                       = sample_id,
             Normal_ID                       = Normal_ID
+    }
+
+    call RunBindingFilterpVACseq as RunBindingFilterpVACseq{
+        input:
+            epitopes_tsv                    = RunpVACseq.pvacseq_epitopes,
+            sample_id                       = sample_id,
+    
+            cpus                            = cpus,
+            preemptible                     = preemptible,
+            sample_id                       = sample_id
+    }
+
+    call RunCoverageFilterpVACseq as RunCoverageFilterpVACseq{
+        input:
+            epitopes_tsv                    = RunBindingFilterpVACseq.binding_filter,
+            sample_id                       = sample_id,
+    
+            cpus                            = cpus,
+            preemptible                     = preemptible,
+            sample_id                       = sample_id
+    }
+
+    call RunTranscriptSupportFilterpVACseq as RunTranscriptSupportFilterpVACseq{
+        input:
+            epitopes_tsv                    = RunCoverageFilterpVACseq.coverage_filter,
+            sample_id                       = sample_id,
+    
+            cpus                            = cpus,
+            preemptible                     = preemptible,
+            sample_id                       = sample_id
     }
 }
