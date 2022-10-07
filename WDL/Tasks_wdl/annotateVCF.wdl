@@ -554,7 +554,7 @@ task RunExpressionData{
 
         Int cpus
         Int preemptible
-        Int disk = ceil( (size(ref_fasta, "GB") * 6) + size(ref_fasta_index, "GB") + size(ref_dict, "GB") + size(BAM, "GB") + size(BAM_index, "GB") + size(GTF, "GB") + 100)
+        Int disk = ceil( (size(ref_fasta, "GB") * 6) + size(ref_fasta_index, "GB") + size(ref_dict, "GB") + (size(BAM, "GB")*4) + size(BAM_index, "GB") + size(GTF, "GB") + 100)
     }
 
     command <<<
@@ -611,7 +611,7 @@ task RunExpressionData{
         disks: "local-disk " + disk + " HDD"
         docker: "brownmp/pvactools:devel"
         cpu: cpus
-        memory: "200GB"
+        memory: "600GB"
     }
 }
 
@@ -636,7 +636,7 @@ task RunAddExpressionData{
         Int cpus
         Int preemptible
         String sample_id
-        Int disk = ceil( (size(VCF, "GB") * 2) + size(ref_fasta) + size(featureCounts_GX, "GB")*2 + 50)
+        Int disk = ceil( (size(VCF, "GB") * 2) + size(ref_fasta, "GB") + (size(featureCounts_GX, "GB")*2) + 50)
     }
 
     command <<<
@@ -679,7 +679,7 @@ task RunAddExpressionData{
         disks: "local-disk " + disk + " HDD"
         docker: "brownmp/pvactools:devel"
         cpu: cpus
-        memory: "50GB"
+        memory: "100GB"
     }
 }
 
