@@ -175,7 +175,10 @@ task RunFilterNonExons {
     command <<<
         set -ex
         echo "####### Filter non-exon region ########"
-        tabix -h -R ~{Exon_BED_File} ~{VCF} > ~{sample_id}_exon_filtered.vcf
+        #tabix -h -R ~{Exon_BED_File} ~{VCF} > ~{sample_id}_exon_filtered.vcf
+        # Now limit the Variants to variants located in the exon region
+        bcftools view -R ~{Exon_BED_File} \
+            ~{VCF} > ~{sample_id}_exon_filtered.vcf
 
         bcftools sort ~{sample_id}_exon_filtered.vcf > ~{sample_id}_exon_filtered_sorted.vcf
         bgzip -c ~{sample_id}_exon_filtered_sorted.vcf > ~{sample_id}_exon_filtered_sorted.vcf.gz
