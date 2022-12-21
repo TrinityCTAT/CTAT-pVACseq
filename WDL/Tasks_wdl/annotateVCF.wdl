@@ -8,11 +8,11 @@ version 1.0
 # Add the RNA-Editing Annotations to the VCF file 
 task RunIndexVCF {
     input {
-        File VCF
+        File VCF_input
 
         Int preemptible
         Int cpus = 1
-        Int disk = ceil((size(VCF, "GB") * 2) + 50)
+        Int disk = ceil((size(VCF_input, "GB") * 2) + 50)
     }
 
     command <<<
@@ -20,13 +20,13 @@ task RunIndexVCF {
 
         echo "####### Creating VCF index ########"
 
-        bgzip -c ~{VCF} > ~{VCF}.gz
-        tabix -p vcf ~{VCF}.gz
+        bgzip -c ~{VCF_input} > ~{VCF_input}.gz
+        tabix -p vcf ~{VCF_input}.gz
 
     >>>
     output {
-        File VCF_ouput = "~{VCF}.gz"
-        File VCF_index = "~{VCF}.gz.tbi"
+        File VCF_ouput = "~{VCF_input}.gz"
+        File VCF_index = "~{VCF_input}.gz.tbi"
     }
 
     runtime {

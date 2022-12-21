@@ -124,7 +124,7 @@ workflow pVACseqPreprocess {
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunIndexVCF as RunIndexVCF{
         input:
-            VCF                 = RunAnnotateVEP.VEP_output,
+            VCF_input           = RunAnnotateVEP.VEP_output,
             
             cpus                = cpus,
             preemptible         = preemptible,
