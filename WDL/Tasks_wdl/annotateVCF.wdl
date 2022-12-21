@@ -2,10 +2,6 @@ version 1.0
 
 
 
-        # index 
-        bgzip -c annotated_VEP.vcf > annotated_VEP.vcf.gz
-        tabix -p vcf annotated_VEP.vcf.gz
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run Annotations: Index VCF
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
