@@ -25,7 +25,7 @@ task RunIndexVCF {
 
     >>>
     output {
-        File VCF       = "~{VCF}.gz"
+        File VCF_ouput = "~{VCF}.gz"
         File VCF_index = "~{VCF}.gz.tbi"
     }
 
