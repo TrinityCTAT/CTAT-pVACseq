@@ -5,7 +5,7 @@ version 1.0
             ############################################################
         ####################################################################
 ######################################################################################
-#                                 pVACseq Maine Workflow                             #
+#                                 pVACseq Main Workflow                             #
 ######################################################################################
         #####################################################################
             ############################################################
@@ -118,14 +118,27 @@ workflow pVACseqPreprocess {
             sample_id           = sample_id
     }
 
+
+    #~~~~~~~~~~~~~~~~~~~~
+    # Index VCF
+    #~~~~~~~~~~~~~~~~~~~~
+    call annotateVCF.RunIndexVCF as RunIndexVCF{
+        input:
+            VCF                 = RunAnnotateVEP.VEP_output,
+            
+            cpus                = cpus,
+            preemptible         = preemptible,
+            sample_id           = sample_id
+    }
+
     #~~~~~~~~~~~~~~~~~~~~
     # Read Count Data
     #~~~~~~~~~~~~~~~~~~~~
     # Get the Bam read count information
     call annotateVCF.RunBamReadcount as TumorRunBamReadcount{
         input:
-            VCF                 = RunAnnotateVEP.decomposed_VEP_output,
-            VCF_index           = RunAnnotateVEP.decomposed_VEP_output_index,
+            VCF                 = RunIndexVCF.VCF,
+            VCF_index           = RunIndexVCF.VCF_index,
             BAM                 = BAM_Tumor,
             BAM_index           = BAM_Tumor_index,
             ref_fasta           = ref_fasta,
@@ -138,7 +151,7 @@ workflow pVACseqPreprocess {
     }
     call annotateVCF.RunBamReadcount as NormalRunBamReadcount{
         input:
-            VCF                 = RunAnnotateVEP.decomposed_VEP_output,
+            VCF                 = RunAnnotateVEP.VEP_output,
             VCF_index           = RunAnnotateVEP.decomposed_VEP_output_index,
             BAM                 = BAM_Normal,
             BAM_index           = BAM_Normal_index,

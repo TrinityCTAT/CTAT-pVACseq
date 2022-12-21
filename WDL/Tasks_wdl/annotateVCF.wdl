@@ -2,6 +2,55 @@ version 1.0
 
 
 
+        # index 
+        bgzip -c annotated_VEP.vcf > annotated_VEP.vcf.gz
+        tabix -p vcf annotated_VEP.vcf.gz
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Run Annotations: Index VCF
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add the RNA-Editing Annotations to the VCF file 
+task RunIndexVCF {
+    input {
+        File VCF
+
+        Int preemptible
+        Int cpus = 1
+        Int disk = ceil((size(VCF, "GB") * 2) + 50)
+    }
+
+    command <<<
+        set -ex
+
+        echo "####### Creating VCF index ########"
+
+        bgzip -c ~{VCF} > ~{VCF}.gz
+        tabix -p vcf ~{VCF}.gz
+
+    >>>
+    output {
+        File VCF       = "~{VCF}.gz"
+        File VCF_index = "~{VCF}.gz.tbi"
+    }
+
+    runtime {
+        disks: "local-disk " + disk + " HDD"
+        docker: "brownmp/pvactools:devel"
+        memory: "1G"
+        preemptible: preemptible
+        cpus : cpus
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run Annotations: Add RNA-Editing to VCF

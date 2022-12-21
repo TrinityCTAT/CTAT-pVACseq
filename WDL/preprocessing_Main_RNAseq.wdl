@@ -111,7 +111,7 @@ workflow pVACseqPreprocess {
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunDecompose as RunDecompose{
         input:
-            VCF                 =  RunAnnotateVEP.VEP_output,
+            VCF                 = RunAnnotateVEP.VEP_output,
 
             preemptible         = preemptible,
             sample_id           = sample_id
