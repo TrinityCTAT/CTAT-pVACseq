@@ -5,7 +5,7 @@ version 1.0
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Run Annotations: Index VCF
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# Add the RNA-Editing Annotations to the VCF file 
+# Index VCF
 task RunIndexVCF {
     input {
         File VCF_input
@@ -24,6 +24,7 @@ task RunIndexVCF {
         tabix -p vcf ~{VCF_input}.gz
 
     >>>
+
     output {
         File VCF_ouput = "~{VCF_input}.gz"
         File VCF_index = "~{VCF_input}.gz.tbi"
@@ -32,7 +33,7 @@ task RunIndexVCF {
     runtime {
         disks: "local-disk " + disk + " HDD"
         docker: "brownmp/pvactools:devel"
-        memory: "1G"
+        memory: "4G"
         preemptible: preemptible
         cpus : cpus
     }
