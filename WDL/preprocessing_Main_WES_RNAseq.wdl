@@ -37,8 +37,8 @@ workflow pVACseqPreprocess {
         #~~~~~~~~~~~~
         # FASTQ Files
         #~~~~~~~~~~~~
-        File left
-        File right
+        #File left
+        #File right
         
         #~~~~~~~~~~~~
         # VCF Files
@@ -118,18 +118,18 @@ workflow pVACseqPreprocess {
             sample_id           = sample_id
     }
 
-
     #~~~~~~~~~~~~~~~~~~~~
-    # Index VCF
+    # Decompose
     #~~~~~~~~~~~~~~~~~~~~
-    call annotateVCF.RunIndexVCF as RunIndexVCF{
+    call annotateVCF.RunDecompose as RunDecompose{
         input:
-            VCF_input           = RunAnnotateVEP.VEP_output,
-            
-            cpus                = cpus,
+            VCF                 = RunAnnotateVEP.VEP_output,
+
             preemptible         = preemptible,
             sample_id           = sample_id
+
     }
+
 
     #~~~~~~~~~~~~~~~~~~~~
     # Read Count Data
@@ -137,8 +137,8 @@ workflow pVACseqPreprocess {
     # Get the Bam read count information
     call annotateVCF.RunBamReadcount as TumorRunBamReadcount{
         input:
-            VCF                 = RunIndexVCF.VCF,
-            VCF_index           = RunIndexVCF.VCF_index,
+            VCF                 = RunDecompose.decomposed_VCF,
+            VCF_index           = RunDecompose.decomposed_VCF_index,
             BAM                 = BAM_Tumor,
             BAM_index           = BAM_Tumor_index,
             ref_fasta           = ref_fasta,
@@ -151,8 +151,8 @@ workflow pVACseqPreprocess {
     }
     call annotateVCF.RunBamReadcount as NormalRunBamReadcount{
         input:
-            VCF                 = RunAnnotateVEP.VEP_output,
-            VCF_index           = RunAnnotateVEP.decomposed_VEP_output_index,
+            VCF                 = RunDecompose.decomposed_VCF,
+            VCF_index           = RunDecompose.decomposed_VCF_index,
             BAM                 = BAM_Normal,
             BAM_index           = BAM_Normal_index,
             ref_fasta           = ref_fasta,
@@ -166,8 +166,8 @@ workflow pVACseqPreprocess {
 
     call annotateVCF.RunBamReadcount as RnaRunBamReadcount{
         input:
-            VCF                 = RunAnnotateVEP.decomposed_VEP_output,
-            VCF_index           = RunAnnotateVEP.decomposed_VEP_output_index,
+            VCF                 = RunDecompose.decomposed_VCF,
+            VCF_index           = RunDecompose.decomposed_VCF_index,
             BAM                 = BAM_RNA,
             BAM_index           = BAM_RNA_index,
             ref_fasta           = ref_fasta,
@@ -182,7 +182,7 @@ workflow pVACseqPreprocess {
     # Add the bam readcount information
     call annotateVCF.RunAddReadcount as TumorRunAddReadcount{
         input:
-            VCF                 = RunAnnotateVEP.decomposed_VEP_output,
+            VCF                 = RunDecompose.decomposed_VCF,
             readcount_indel     = TumorRunBamReadcount.sample_bam_readcount_indel,
             readcount_snv       = TumorRunBamReadcount.sample_bam_readcount_snv,
             RNAorDNA            = "DNA",
@@ -221,8 +221,6 @@ workflow pVACseqPreprocess {
     #~~~~~~~~~~~~~~~~~~~~
     call annotateVCF.RunExpressionData as RunExpressionData{
         input:
-            left                = left,
-            right               = right,
             VCF                 = RnaRunAddReadcount.annotated_vcf,
             BAM                 = BAM_RNA,
             BAM_index           = BAM_RNA_index,
@@ -233,6 +231,24 @@ workflow pVACseqPreprocess {
             Tumor_ID            = Tumor_ID,
 
             GTF                 = GTF,
+
+            cpus                = cpus,
+            preemptible         = preemptible,
+            sample_id           = sample_id
+    }
+    
+    # Add expression data annotation 
+    call annotateVCF.RunAddExpressionData as RunAddExpressionData{
+        input:
+            VCF                 = RnaRunAddReadcount.annotated_vcf,
+            featureCounts_GX    = RunExpressionData.featureCounts_GX,
+            featureCounts_TX    = RunExpressionData.featureCounts_TX,
+
+            ref_fasta           = ref_fasta,
+            ref_fasta_index     = ref_fasta_index,
+            ref_dict            = ref_dict,
+            
+            Tumor_ID            = Tumor_ID,
 
             cpus                = cpus,
             preemptible         = preemptible,
@@ -276,7 +292,7 @@ workflow pVACseqPreprocess {
 
     output {
 
-        File annotated_VCF = RunExpressionData.annotated_vcf
+        File annotated_VCF = RunAddExpressionData.annotated_vcf
         File phasedVCF = RunAnnotateCombinedVCF.combined_annotated_VCF
         
     }

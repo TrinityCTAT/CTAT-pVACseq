@@ -13,6 +13,7 @@ task RunpVACseq{
         File phase_VCF
 
         String HLAs
+        String fasta_size = 200
         String epitope_prediction_algorithms
         String? epitope_lengths_I
         String? epitope_lengths_II
@@ -66,6 +67,7 @@ task RunpVACseq{
             --phased-proximal-variants-vcf phased.vcf.gz \
             --iedb-install-directory /opt/iedb \
             -t ~{cpus} \
+            --fasta-size ~{fasta_size} \
             ~{"-e1 " + epitope_lengths_I } ~{"-e2 " + epitope_lengths_II } ~{"--normal-sample-name " + Normal_ID}
 
         tar cvf output.tar output
@@ -188,6 +190,43 @@ task RunTranscriptSupportFilterpVACseq {
 }
 
 
+
+
+
+task RunFilterRNA {
+    input {
+        File epitopes_tsv
+        String sample_id
+
+        Int preemptible
+        Int cpus = 1
+        Int disk = ceil((size(epitopes_tsv, "GB") * 2) + 50)
+    }
+
+    command <<<
+        set -ex
+
+        echo "####### Filter RNA Epitopes ########"
+        
+        Rscript /usr/local/src/Filter.R \
+            --file ~{epitopes_tsv} \
+            --out ~{sample_id}_Filtered.tsv
+    >>>
+
+    output {
+        File TSL_filter       = "~{sample_id}_Filtered.tsv"
+    }
+
+    runtime {
+        disks: "local-disk " + disk + " HDD"
+        docker: "brownmp/pvactools:devel"
+        memory: "2G"
+        preemptible: preemptible
+        cpus : cpus
+    }
+}
+
+
             ############################################################
         ####################################################################
 ######################################################################################
@@ -212,9 +251,15 @@ workflow pVACseq {
         String sample_id
         String? Normal_ID
         String HLAs
+        String? fasta_size
         String epitope_prediction_algorithms
         String? epitope_lengths_I
         String? epitope_lengths_II
+
+        #~~~~~~~~~~~~
+        # DNA or RNA
+        #~~~~~~~~~~~~
+        String Type
       
         #~~~~~~~~~~~~
         # VCF Files
@@ -251,6 +296,7 @@ workflow pVACseq {
             VCF                             = VCF,
             phase_VCF                       = phased_VCF,
             HLAs                            = HLAs,
+            fasta_size                      = fasta_size,
             epitope_prediction_algorithms   = epitope_prediction_algorithms,
             epitope_lengths_I               = epitope_lengths_I,
             epitope_lengths_II              = epitope_lengths_II,
@@ -261,33 +307,62 @@ workflow pVACseq {
             Normal_ID                       = Normal_ID
     }
 
-    call RunBindingFilterpVACseq as RunBindingFilterpVACseq{
-        input:
-            epitopes_tsv                    = RunpVACseq.pvacseq_epitopes,
-            sample_id                       = sample_id,
-    
-            cpus                            = cpus,
-            preemptible                     = preemptible,
-            sample_id                       = sample_id
+    #~~~~~~~~~~~~~~~~~~~~~~
+    #   DNA Filter
+    #~~~~~~~~~~~~~~~~~~~~~~
+    if (Type == "DNA"){
+        call RunBindingFilterpVACseq as RunBindingFilterpVACseq{
+            input:
+                epitopes_tsv                    = RunpVACseq.pvacseq_epitopes,
+                sample_id                       = sample_id,
+        
+                cpus                            = cpus,
+                preemptible                     = preemptible,
+                sample_id                       = sample_id
+        }
+
+        call RunCoverageFilterpVACseq as RunCoverageFilterpVACseq{
+            input:
+                epitopes_tsv                    = RunBindingFilterpVACseq.binding_filter,
+                sample_id                       = sample_id,
+        
+                cpus                            = cpus,
+                preemptible                     = preemptible,
+                sample_id                       = sample_id
+        }
+
+        call RunTranscriptSupportFilterpVACseq as RunTranscriptSupportFilterpVACseq{
+            input:
+                epitopes_tsv                    = RunCoverageFilterpVACseq.coverage_filter,
+                sample_id                       = sample_id,
+        
+                cpus                            = cpus,
+                preemptible                     = preemptible,
+                sample_id                       = sample_id
+        }
     }
 
-    call RunCoverageFilterpVACseq as RunCoverageFilterpVACseq{
-        input:
-            epitopes_tsv                    = RunBindingFilterpVACseq.binding_filter,
-            sample_id                       = sample_id,
-    
-            cpus                            = cpus,
-            preemptible                     = preemptible,
-            sample_id                       = sample_id
+    #~~~~~~~~~~~~~~~~~~~~~~~
+    #   RNA Filter
+    #~~~~~~~~~~~~~~~~~~~~~~~
+    if (Type == "RNA"){
+
+        call RunFilterRNA as RunFilterRNA{
+                input:
+                    epitopes_tsv                    = RunpVACseq.pvacseq_epitopes,
+                    sample_id                       = sample_id,
+            
+                    cpus                            = cpus,
+                    preemptible                     = preemptible,
+                    sample_id                       = sample_id
+        }
     }
 
-    call RunTranscriptSupportFilterpVACseq as RunTranscriptSupportFilterpVACseq{
-        input:
-            epitopes_tsv                    = RunCoverageFilterpVACseq.coverage_filter,
-            sample_id                       = sample_id,
-    
-            cpus                            = cpus,
-            preemptible                     = preemptible,
-            sample_id                       = sample_id
+    output {
+        File? pvacseq_epitopes = RunpVACseq.pvacseq_epitopes
+        File? TSL_filter_RNA = RunFilterRNA.TSL_filter
+        File? TSL_filter_DNA = RunTranscriptSupportFilterpVACseq.TSL_filter
     }
 }
+
+

@@ -241,7 +241,7 @@ ENV PICARD_HOME $SRC/picard.jar
 #~~~~~~~~~~~~~~~~~~~~~
 
 WORKDIR /usr/local/src
-ARG CACHEBUST=1
+#ARG CACHEBUST=1
 #COPY SplitVCFaddExpressionMultiprocess.py /usr/local/src/SplitVCFaddExpressionMultiprocess.py
 COPY annotate_VEP.py /usr/local/src/annotate_VEP.py
 
@@ -253,3 +253,11 @@ COPY annotation_VEP_expression.py /usr/local/src/annotation_VEP_expression.py
 
 
 CMD ["/bin/bash"]
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Add R script 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ARG CACHEBUST=1
+COPY Filter.R /usr/local/src/Filter.R
