@@ -303,7 +303,8 @@ task RunAnnotateGnomad {
                 counter+=1
         CODE
 
-        bgzip -c gnomAD_filtered.vcf > gnomAD_filtered.vcf.gz
+        iconv -f ISO-8859-1 -t UTF-8 gnomAD_filtered.vcf > gnomAD_filtered_utf8.vcf
+        bgzip -c gnomAD_filtered_utf8.vcf > gnomAD_filtered.vcf.gz
         tabix -p vcf gnomAD_filtered.vcf.gz
     >>>
     output {
