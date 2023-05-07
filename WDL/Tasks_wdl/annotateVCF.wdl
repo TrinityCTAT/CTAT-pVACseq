@@ -443,7 +443,8 @@ task RunDecompose{
 
 
         # Index the output VCF file 
-        bgzip -c ~{sample_id}_decomposed_output.vcf > ~{sample_id}_decomposed_output.vcf.gz
+        iconv -f ISO-8859-1 -t UTF-8 ~{sample_id}_decomposed_output.vcf  > ~{sample_id}_decomposed_output_utf8.vcf
+        bgzip -c ~{sample_id}_decomposed_output_utf8.vcf > ~{sample_id}_decomposed_output.vcf.gz
         tabix -p vcf ~{sample_id}_decomposed_output.vcf.gz
     >>>
 
@@ -718,6 +719,9 @@ task RunAddExpressionData{
             --output . \
             --featureCounts_GX ~{featureCounts_GX} \
             --featureCounts_TX ~{featureCounts_TX}
+
+        mv annotated_TXGX.vcf annotated_TXGX_iso.vcf
+        iconv -f ISO-8859-1 -t UTF-8 annotated_TXGX_iso.vcf > annotated_TXGX.vcf
     >>>
 
     output {
