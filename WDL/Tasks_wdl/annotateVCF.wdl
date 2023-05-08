@@ -303,8 +303,7 @@ task RunAnnotateGnomad {
                 counter+=1
         CODE
 
-        iconv -f ISO-8859-1 -t UTF-8 gnomAD_filtered.vcf > gnomAD_filtered_utf8.vcf
-        bgzip -c gnomAD_filtered_utf8.vcf > gnomAD_filtered.vcf.gz
+        bgzip -c gnomAD_filtered.vcf > gnomAD_filtered.vcf.gz
         tabix -p vcf gnomAD_filtered.vcf.gz
     >>>
     output {
@@ -443,8 +442,7 @@ task RunDecompose{
 
 
         # Index the output VCF file 
-        iconv -f ISO-8859-1 -t UTF-8 ~{sample_id}_decomposed_output.vcf  > ~{sample_id}_decomposed_output_utf8.vcf
-        bgzip -c ~{sample_id}_decomposed_output_utf8.vcf > ~{sample_id}_decomposed_output.vcf.gz
+        bgzip -c ~{sample_id}_decomposed_output.vcf > ~{sample_id}_decomposed_output.vcf.gz
         tabix -p vcf ~{sample_id}_decomposed_output.vcf.gz
     >>>
 
@@ -719,9 +717,6 @@ task RunAddExpressionData{
             --output . \
             --featureCounts_GX ~{featureCounts_GX} \
             --featureCounts_TX ~{featureCounts_TX}
-
-        mv annotated_TXGX.vcf annotated_TXGX_iso.vcf
-        iconv -f ISO-8859-1 -t UTF-8 annotated_TXGX_iso.vcf > annotated_TXGX.vcf
     >>>
 
     output {
