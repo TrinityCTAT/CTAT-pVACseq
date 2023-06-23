@@ -35,6 +35,7 @@ RunFeatureCount <- function( input_bam,
                             GTF.featureType = "exon",
                             isGTFAnnotationFile = TRUE,
                             genome = ref_genome,
+                            allowMultiOverlap = TRUE,
                             nthreads = threads)
     ################
     # Calculate TPM
