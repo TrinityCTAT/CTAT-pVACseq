@@ -15,7 +15,7 @@ filter_calling <- function(df){
     #~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Binding score filtering 
     #~~~~~~~~~~~~~~~~~~~~~~~~~~
-    idx = which(df$Best.MT.Score <= 500)
+    #idx = which(df$Best.MT.Score <= 500)
     idx = which(df$Median.MT.Score <= 500)
     filtered_DF = df[idx, ]
     #~~~~~~~~~~~~~~~~~~~~~~~~~~

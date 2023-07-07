@@ -26,17 +26,28 @@ task RunpVACseq{
         Int disk = ceil((size(VCF, "GB") * 3) + (size(phase_VCF, "GB") * 2) + 50)
     }
 
-    command <<<
+    command {
         set -e
+        set -v
 
         #~~~~~~~~~~~~~~~~~~~~~~~~
         # bgzip and index the input vcf and phased vcf
         #~~~~~~~~~~~~~~~~~~~~~~~~
-        bgzip -c ~{VCF} > VEP_output.vcf.gz
+
+        if file ~{VCF} | grep -q "Variant Call Format (VCF)"; then
+            bgzip -c ~{VCF} > VEP_output.vcf.gz
+        elif file ~{VCF} | grep -q "gzip"; then
+            mv ~{VCF} VEP_output.vcf.gz    
+        fi
         tabix -p vcf VEP_output.vcf.gz
 
-        bgzip -c ~{phase_VCF} > phased.vcf.gz
+        if file ~{phase_VCF} | grep -q "Variant Call Format (VCF)"; then
+            bgzip -c ~{phase_VCF} > phased.vcf.gz
+        elif file ~{phase_VCF} | grep -q "gzip"; then
+            mv ~{phase_VCF} phased.vcf.gz
+        fi
         tabix -p vcf phased.vcf.gz
+
 
         # Need to change the tmp directory 
         # Setting the TMPDIR environment variable to a long path will cause an error in Python mulitprocessing library.
@@ -72,7 +83,7 @@ task RunpVACseq{
 
         tar cvf output.tar output
 
-    >>>
+    }
 
     output {
         File pvacseq_output   = "output.tar"
@@ -82,7 +93,7 @@ task RunpVACseq{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "50GB"
     }
@@ -115,7 +126,7 @@ task RunBindingFilterpVACseq {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -148,7 +159,7 @@ task RunCoverageFilterpVACseq {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -182,7 +193,7 @@ task RunTranscriptSupportFilterpVACseq {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -201,6 +212,7 @@ task RunFilterRNA {
         Int preemptible
         Int cpus = 1
         Int disk = ceil((size(epitopes_tsv, "GB") * 2) + 50)
+        Int memory_gb = ceil((size(epitopes_tsv, "GB") * 2) + 4)
     }
 
     command <<<
@@ -219,8 +231,8 @@ task RunFilterRNA {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
-        memory: "2G"
+        docker: "trinityctat/pvactools:latest"
+        memory: memory_gb + "GiB"
         preemptible: preemptible
         cpus : cpus
     }
