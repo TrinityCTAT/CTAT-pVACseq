@@ -93,7 +93,7 @@ task RunpVACseq{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + disk + " HDD"
-        docker: "cgeorgescu/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "50GB"
     }
@@ -126,7 +126,7 @@ task RunBindingFilterpVACseq {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "cgeorgescu/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -159,7 +159,7 @@ task RunCoverageFilterpVACseq {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "cgeorgescu/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -193,7 +193,7 @@ task RunTranscriptSupportFilterpVACseq {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "cgeorgescu/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -231,7 +231,7 @@ task RunFilterRNA {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "cgeorgescu/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: memory_gb + "GiB"
         preemptible: preemptible
         cpus : cpus

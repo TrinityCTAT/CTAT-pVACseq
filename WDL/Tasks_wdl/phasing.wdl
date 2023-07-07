@@ -142,7 +142,7 @@ task RunAnnotateCombinedVCF{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + size(ref_fasta,"GB") + 100) + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "50GB"
     }

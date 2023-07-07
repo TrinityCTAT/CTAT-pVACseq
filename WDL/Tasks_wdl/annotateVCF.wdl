@@ -32,7 +32,7 @@ task RunIndexVCF {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -92,7 +92,7 @@ task RunAnnotateRNAediting {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -135,7 +135,7 @@ task RunFilterRNAediting {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -193,7 +193,7 @@ task RunCreateExonBED {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -237,7 +237,7 @@ task RunFilterNonExons {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -314,7 +314,7 @@ task RunAnnotateGnomad {
 
     runtime {
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "4G"
         preemptible: preemptible
         cpus : cpus
@@ -359,7 +359,7 @@ task RunAnnotateGenotypeSample{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + 100) + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "20GB"
     }
@@ -414,7 +414,7 @@ task RunAnnotateVEP{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(ref_fasta, "GB") + size(VEP_Reference, "GB") + size(VCF, "GB")*2 + 100) + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "50GB"
     }
@@ -454,7 +454,7 @@ task RunDecompose{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + 100) + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         memory: "50GB"
     }
 }
@@ -572,7 +572,7 @@ task RunAddReadcount{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + ceil( size(VCF, "GB")*2 + size(readcount_indel,"GB") + size(readcount_snv,"GB") + 100) + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "10GB"
     }
@@ -658,7 +658,7 @@ task RunExpressionData{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "600GB"
     }
@@ -726,7 +726,7 @@ task RunAddExpressionData{
     runtime {
         preemptible: preemptible
         disks: "local-disk " + disk + " HDD"
-        docker: "brownmp/pvactools:devel"
+        docker: "trinityctat/pvactools:latest"
         cpu: cpus
         memory: "100GB"
     }
